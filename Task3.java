@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class oving3 {
+public class Task3 {
   public static String COLUMNS_FORMAT = "%-25s%-9s%-7b%-7b%n";
   public static int RANDOM_NUMBER_LIMIT = 10001;
   public static int LENGTH = 50_000_000;

@@ -1,8 +1,6 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class oving1 {
+public class Task1 {
   public static int[] rate;
 
   public static void main(String[] args) {

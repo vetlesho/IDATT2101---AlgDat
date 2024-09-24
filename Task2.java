@@ -1,6 +1,6 @@
 import java.util.function.BiFunction;
 
-public class oving2 {
+public class Task2 {
   //O(n)
   public static double recursiveExponent1(double x, int n) {
     if (n == 1) {
@@ -72,8 +72,8 @@ public class oving2 {
     checkCorrectness(5, 11, 48828125);
     checkCorrectness(2, 10, 1024);
 
-    runTests("Metode 1, O(n)", oving2::recursiveExponent1);
-    runTests("Metode 2, O(log(n))", oving2::recursiveExponent2);
-    runTests("Math.pow", oving2::powFunc);
+    runTests("Metode 1, O(n)", Task2::recursiveExponent1);
+    runTests("Metode 2, O(log(n))", Task2::recursiveExponent2);
+    runTests("Math.pow", Task2::powFunc);
   }
 }
