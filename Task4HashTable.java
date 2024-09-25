@@ -1,11 +1,10 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class Task4HashTable {
   // HashNode class to create linked list nodes
-  private class HashNode {
+  private static class HashNode {
     String value;
     HashNode next;
 
@@ -48,6 +47,7 @@ public class Task4HashTable {
     }
   }
 
+  // Search for a string in the hash table
   public HashNode search(String s) {
     int h = hashFunction(s);
     HashNode temp = nodes[h];
@@ -60,20 +60,28 @@ public class Task4HashTable {
     return null;
   }
 
+  // Print the hash table and some statistics
   public void print() {
     HashNode temp;
     int people = 0;
+    int i = 0;
     for (HashNode n : nodes) {
+      i++;
       if (n != null) {
         temp = n;
         people++;
+        System.out.print(i + ": " + temp.value);
         while (temp.next != null) {
           temp = temp.next;
           people++;
+          System.out.print(" -> " + temp.value);
         }
-
+        System.out.println();
+      } else {
+        System.out.println(i + ": ");
       }
     }
+
     System.out.println("Nr of collisions " + collisions);
     System.out.println("Load factor " + (double) (people - collisions) / length);
     System.out.println("Average collisions pr person " + ((double) collisions / (double) people));
@@ -82,28 +90,13 @@ public class Task4HashTable {
   public static void main(String[] args) {
     Task4HashTable table = new Task4HashTable(124);
     try {
-      BufferedReader b = new BufferedReader(new FileReader(new File("navn.txt")));
+      BufferedReader b = new BufferedReader(new FileReader(("navn.txt")));
       String text;
       while ((text = b.readLine()) != null) {
         table.insert(text);
       }
     } catch (IOException e) {
       e.printStackTrace();
-    }
-    //print all the names
-
-    int i = 0;
-    for (HashNode n : table.nodes) {
-      i++;
-      if (n != null) {
-        HashNode temp = n;
-        System.out.print(i + ": " + temp.value);
-        while (temp.next != null) {
-          temp = temp.next;
-          System.out.print(" -> " + temp.value);
-        }
-        System.out.println();
-      }
     }
 
     table.print();
