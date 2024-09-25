@@ -1,20 +1,22 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Task4HashTable {
-
   // HashNode class to create linked list nodes
-  private static class HashNode {
-    String key;
+  private class HashNode {
+    String value;
     HashNode next;
 
-    public HashNode(String key) {
-      this.key = key;
-      this.next = null;
+    public HashNode(String value, HashNode next) {
+      this.value = value;
+      this.next = next;
     }
   }
 
-  private HashNode[] nodes;
-  private int length;
+  private final HashNode[] nodes;
+  private final int length;
   private int collisions;
 
   public Task4HashTable(int length) {
@@ -23,94 +25,88 @@ public class Task4HashTable {
     this.collisions = 0;
   }
 
-  private int hashFunction(String key) {
+  // Hash function to calculate the hash value of a given string
+  private int hashFunction(String value) {
     int number = 1;
     int hash = 0;
 
-    for (char n : key.toCharArray()) {
-      hash += n*31*number;
+    for (char n : value.toCharArray()) {
+      hash += n * number;
       number++;
     }
     return hash % length;
   }
 
-  public void insert(String key) {
-    int index = hashFunction(key);
-    HashNode newNode = new HashNode(key);
-
-    if (nodes[index] == null) {
-      nodes[index] = newNode;
+  // Insert a new string into the hash table
+  public void insert(String s) {
+    int h = hashFunction(s);
+    if (nodes[h] == null) {
+      nodes[h] = new HashNode(s, null);
     } else {
+      nodes[h] = new HashNode(s, nodes[h]);
       collisions++;
-      System.out.println("Collision: " + nodes[index].key + " and " + key);
-      HashNode temp = nodes[index];
-      while (temp.next != null) {
-        temp = temp.next;
-      }
-      temp.next = newNode;
     }
   }
 
-  public HashNode search(String key) {
-    StringBuilder output = new StringBuilder();
-    int index = hashFunction(key);
-    HashNode temp = nodes[index];
-    output.append(temp.key);
-    while (!temp.key.equals(key)) {
+  public HashNode search(String s) {
+    int h = hashFunction(s);
+    HashNode temp = nodes[h];
+    while (temp != null) {
+      if (temp.value.equals(s)) {
+        return temp;
+      }
       temp = temp.next;
-      output.append(" -> ").append(temp.key);
     }
-    System.out.println(output);
-    return temp;
+    return null;
   }
 
   public void print() {
     HashNode temp;
     int people = 0;
-    for(HashNode n : nodes){
-      if(n != null){
+    for (HashNode n : nodes) {
+      if (n != null) {
         temp = n;
         people++;
-        while(temp.next != null) {
+        while (temp.next != null) {
           temp = temp.next;
           people++;
         }
 
       }
     }
-    System.out.println("nr of collisions " + collisions);
-    System.out.println("Load factor " + (double) (people/length) );
-    System.out.println("avarage collisions pr person " + ((double)collisions/(double)people));
+    System.out.println("Nr of collisions " + collisions);
+    System.out.println("Load factor " + (double) (people - collisions) / length);
+    System.out.println("Average collisions pr person " + ((double) collisions / (double) people));
   }
 
   public static void main(String[] args) {
-    Task4HashTable table = new Task4HashTable(86);
+    Task4HashTable table = new Task4HashTable(124);
     try {
       BufferedReader b = new BufferedReader(new FileReader(new File("navn.txt")));
       String text;
-      while((text = b.readLine() )!= null){
+      while ((text = b.readLine()) != null) {
         table.insert(text);
       }
-
-    }catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
     }
     //print all the names
+
     int i = 0;
     for (HashNode n : table.nodes) {
       i++;
       if (n != null) {
         HashNode temp = n;
-        System.out.print(i + ": " + temp.key);
+        System.out.print(i + ": " + temp.value);
         while (temp.next != null) {
           temp = temp.next;
-          System.out.print(" -> " + temp.key);
+          System.out.print(" -> " + temp.value);
         }
         System.out.println();
       }
     }
 
-
-    //System.out.println(table.search("Vetle Solheim Hodne").key);
+    table.print();
+    System.out.println(table.search("Vetle Solheim Hodne").value);
   }
 }
