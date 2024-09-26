@@ -2,11 +2,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+// Hash table implementation using linked lists for collisions
 public class Task4HashTable {
   // HashNode class to create linked list nodes
   private static class HashNode {
     String value;
-    HashNode next;
+    HashNode next; // Pointer to the next node
 
     public HashNode(String value, HashNode next) {
       this.value = value;
@@ -38,12 +39,20 @@ public class Task4HashTable {
 
   // Insert a new string into the hash table
   public void insert(String s) {
+    String output = "";
     int h = hashFunction(s);
-    if (nodes[h] == null) {
+    if (nodes[h] == null) { // If the list is empty, create a new node
       nodes[h] = new HashNode(s, null);
     } else {
-      nodes[h] = new HashNode(s, nodes[h]);
+      output += nodes[h].value + " --> ";
+      nodes[h] = new HashNode(s, nodes[h]); // If the list is not empty, add the new node to the beginning
+      output += nodes[h].value;
       collisions++;
+    }
+    if (!output.isEmpty()) {
+      System.out.println(output);
+    } else {
+      System.out.print(output);
     }
   }
 
@@ -62,28 +71,22 @@ public class Task4HashTable {
 
   // Print the hash table and some statistics
   public void print() {
-    HashNode temp;
+    int elements = 0;
     int people = 0;
-    int i = 0;
     for (HashNode n : nodes) {
-      i++;
       if (n != null) {
-        temp = n;
+        elements++;
         people++;
-        System.out.print(i + ": " + temp.value);
-        while (temp.next != null) {
-          temp = temp.next;
+        while (n.next != null) {
+          n = n.next;
           people++;
-          System.out.print(" -> " + temp.value);
         }
-        System.out.println();
-      } else {
-        System.out.println(i + ": ");
       }
     }
 
+    System.out.println("--------------------------");
     System.out.println("Nr of collisions " + collisions);
-    System.out.println("Load factor " + (double) (people - collisions) / length);
+    System.out.println("Load factor " + (double) (elements) / length);
     System.out.println("Average collisions pr person " + ((double) collisions / (double) people));
   }
 
@@ -100,6 +103,12 @@ public class Task4HashTable {
     }
 
     table.print();
-    System.out.println(table.search("Vetle Solheim Hodne").value);
+    String findName = "Vetle Solheim Hodne";
+    HashNode find = table.search(findName);
+    if (find != null) {
+      System.out.println(find.value + ", er funnet!");
+    } else {
+      System.out.println(findName + ", ikke funnet");
+    }
   }
 }
