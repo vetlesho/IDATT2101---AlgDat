@@ -40,13 +40,13 @@ public class Task4HashTable {
   // Insert a new string into the hash table
   public void insert(String s) {
     String output = "";
-    int h = hashFunction(s);
-    if (nodes[h] == null) { // If the list is empty, create a new node
-      nodes[h] = new HashNode(s, null);
+    int key = hashFunction(s);
+    if (nodes[key] == null) { // If the list is empty, create a new node
+      nodes[key] = new HashNode(s, null);
     } else {
-      output += nodes[h].value + " --> ";
-      nodes[h] = new HashNode(s, nodes[h]); // If the list is not empty, add the new node to the beginning
-      output += nodes[h].value;
+      output += nodes[key].value + " --> ";
+      nodes[key] = new HashNode(s, nodes[key]); // If the list is not empty, add the new node to the beginning
+      output += nodes[key].value;
       collisions++;
     }
     if (!output.isEmpty()) {
@@ -58,8 +58,8 @@ public class Task4HashTable {
 
   // Search for a string in the hash table
   public HashNode search(String s) {
-    int h = hashFunction(s);
-    HashNode temp = nodes[h];
+    int key = hashFunction(s);
+    HashNode temp = nodes[key];
     while (temp != null) {
       if (temp.value.equals(s)) {
         return temp;
@@ -73,11 +73,11 @@ public class Task4HashTable {
   public void print() {
     int elements = 0;
     int people = 0;
-    for (HashNode n : nodes) {
+    for (HashNode n : nodes) { // Iterate through all the nodes
       if (n != null) {
         elements++;
         people++;
-        while (n.next != null) {
+        while (n.next != null) { // Iterate through the linked list
           n = n.next;
           people++;
         }
