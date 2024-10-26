@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Program {
-  private static final String inputFile = "compression/resources/test.txt";
+  private static final String inputFile = "compression/resources/passetest.txt";
   private static final String compressedFile = "compression/output/compressed.txt";
   private static final String deCompressedFile = "compression/output/decompressed.txt";
 
