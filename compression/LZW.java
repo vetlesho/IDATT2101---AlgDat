@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class LZW {
+  // Change this variable to stay within the dictionary limit
+  private final static int BYTE_SIZE = 2;
 
   /**
    * This method creates an initial dictionary containing all single-byte ASCII characters (0-255).
@@ -46,17 +48,17 @@ public class LZW {
       // If the current foundChars isn't empty, it didn't get the chance to add it to the result, so add it here.
       compressedData.add(dictionary.get(foundChars));
     }
-    System.out.println(dictionary.size());
+    System.out.println(dictSize);
 
     // Convert List<Integer> to byte array
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    for (int code : compressedData) {
-      byteArrayOutputStream.write((code >> 16) & 0xFF); // 16
-      byteArrayOutputStream.write((code >> 8) & 0xFF); // high byte
-      byteArrayOutputStream.write(code & 0xFF);         // low byte
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    for (Integer code : compressedData) {
+      for (int j = 0; j < BYTE_SIZE; j++) {
+        outputStream.write((code >> (8 * j)) & 0xFF);
+      }
     }
 
-    return byteArrayOutputStream.toByteArray();
+    return outputStream.toByteArray();
   }
 
   /**
@@ -77,12 +79,12 @@ public class LZW {
 
     // Convert compressed byte data to list of integers
     List<Integer> encodedText = new ArrayList<>();
-    for (int i = 0; i < compressedData.length; i += 3) {
-      int code =
-              ((compressedData[i] & 0xFF) << 16) |
-              ((compressedData[i + 1] & 0xFF) << 8) |
-              (compressedData[i + 2] & 0xFF);
-      encodedText.add(code);
+    for (int i = 0; i <= compressedData.length - BYTE_SIZE; i += BYTE_SIZE) {
+      int value = 0;
+      for (int j = 0; j < BYTE_SIZE; j++) {
+        value |= (compressedData[i + j] & 0xFF) << (8 * j);
+      }
+      encodedText.add(value);
     }
 
     // The first integer of the compressed list will always be a character in the dictionary
