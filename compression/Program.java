@@ -1,11 +1,7 @@
 package compression;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Program {
   private static final String inputFile = "compression/resources/diverse.lyx";
@@ -29,79 +25,38 @@ public class Program {
 
   public static void compress() {
     try {
-      // Read inputfile
       FileInputStream fileInputStream = new FileInputStream(inputFile);
-      DataInputStream in = new DataInputStream(fileInputStream);
-      byte[] data = new byte[in.available()];
-      in.readFully(data);
-      in.close();
+      byte[] data = fileInputStream.readAllBytes();
+      fileInputStream.close();
 
-      // Compress data
-      /**
-      byte[] compressedData = LZ2.compress(data);
-      // Write compressed data to output file
+      byte[] compressedData = LZW.compress(data);
+
       FileOutputStream fileOutputStream = new FileOutputStream(compressedFile);
-      DataOutputStream out = new DataOutputStream(fileOutputStream);
-      out.write(compressedData);
-      out.close();
-       */
-
-      // LWZ
-      String inputString = new String(data);
-      List<Integer> compressedData = LZW.encodeNew(inputString);
-
-      // Write compressed data to output file
-      FileOutputStream fileOutputStream = new FileOutputStream(compressedFile);
-      DataOutputStream out = new DataOutputStream(fileOutputStream);
-      System.out.println(compressedData);
-      for (Integer code : compressedData) {
-        out.writeInt(code);
-      }
-      out.close();
+      fileOutputStream.write(compressedData);
+      fileOutputStream.close();
 
       System.out.println("Compression completed successfully.");
       System.out.println("Original size: " + data.length + " bytes.");
-      System.out.println("Compressed size: " + compressedData.size() * 4 + " bytes.");
-    } catch (IOException  | IllegalStateException e) {
+      System.out.println("Compressed size: " + compressedData.length + " bytes.");
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public static void decompress() {
     try {
-      // Read compressed file
       FileInputStream fileInputStream = new FileInputStream(compressedFile);
-      DataInputStream compressedIn = new DataInputStream(fileInputStream);
-      /**
-      byte[] compressedBytes = new byte[compressedIn.available()];
-      compressedIn.readFully(compressedBytes);
-      compressedIn.close();
-      byte[] decompressedData = LZ.decompress(compressedBytes);
-       // Write decompressed data to output file
-       FileOutputStream fileOutputStream = new FileOutputStream(deCompressedFile);
-       DataOutputStream decompressedOut = new DataOutputStream(fileOutputStream);
-       decompressedOut.write(decompressedData);
-       decompressedOut.close();
+      byte[] compressedData = fileInputStream.readAllBytes();
+      fileInputStream.close();
 
-       System.out.println("Decompression completed successfully.");
-       System.out.println("Decompressed size: " + decompressedData.length + " bytes");
-       */
-
-      // LZW
-      List<Integer> compressedData = new ArrayList<>();
-      while (compressedIn.available() > 0) {
-        compressedData.add(compressedIn.readInt());
-      }
-      compressedIn.close();
-      String decompressedString = LZW.decode(compressedData);
+      byte[] decompressedData = LZW.decompress(compressedData);
 
       FileOutputStream fileOutputStream = new FileOutputStream(deCompressedFile);
-      DataOutputStream decompressedOut = new DataOutputStream(fileOutputStream);
-      decompressedOut.write(decompressedString.getBytes());
-      decompressedOut.close();
+      fileOutputStream.write(decompressedData);
+      fileOutputStream.close();
 
       System.out.println("Decompression completed successfully.");
-      System.out.println("Decompressed size: " + decompressedString.length() + " bytes");
+      System.out.println("Decompressed size: " + decompressedData.length + " bytes.");
     } catch (IOException e) {
       e.printStackTrace();
     }
